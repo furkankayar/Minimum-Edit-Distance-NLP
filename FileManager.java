@@ -21,7 +21,7 @@ public class FileManager {
         System.out.println("Reading " + fileName);
         BufferedReader br;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "ISO-8859-9"));
             String line = "";
             while((line = br.readLine()) != null){
                 words.add(line);

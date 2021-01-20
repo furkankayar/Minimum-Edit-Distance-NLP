@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
+import java.util.TreeMap;
 
 public class MEDCalculator {
     private static MEDCalculator instance = new MEDCalculator();
@@ -16,11 +18,19 @@ public class MEDCalculator {
         return fiveNearestWords;
     }
 
-    public MEDModel calculateMED(String str1, String str2){
-        
-        MEDModel medModel = new MEDModel();
-        medModel.setWord1(str1);
-        medModel.setWord2(str2);
+    public TreeMap<String, Integer> calculateMEDForDictionary(String str1, List<String> words){
+
+        TreeMap<String, Integer> wordDistances = new TreeMap<String, Integer>();
+
+        for(String word : words){
+            wordDistances.put(word, calculateMEDValue(str1, word));
+        }
+
+        return sortByValues(wordDistances);
+    }
+
+    private int calculateMEDValue(String str1, String str2){
+
         str1 = "#" + str1;
         str2 = "#" + str2;
         int maxY = str2.length();
@@ -37,23 +47,31 @@ public class MEDCalculator {
                 }
             }
         }
+
+        return distanceMatrix[maxY-1][maxX-1];
+    }
+
+    public MEDModel calculateMED(String str1, String str2){
         
-        /*
-        System.out.println("   " + str1.replace("", "  ").trim());
-        for(int j = 0 ; j < maxY ; j++){
-            System.out.print("\u001B[44m" + str2.charAt(j) + " " + "\u001B[0m" + " ");
-            for(int i = 0 ; i < maxX ; i++){
-                System.out.print(distanceMatrix[j][i] + "  ");
+        MEDModel medModel = new MEDModel();
+        medModel.setWord1(str1);
+        medModel.setWord2(str2);
+        str1 = "#" + str1.toLowerCase();
+        str2 = "#" + str2.toLowerCase();
+        int maxY = str2.length();
+        int maxX = str1.length();
+        int distanceMatrix[][] = initDistanceMatrix(maxY, maxX);
+
+        for(int j = 1 ; j < maxY ; j++){
+            for(int i = 1 ; i < maxX ; i++){
+                if(str2.charAt(j) == str1.charAt(i)){
+                    distanceMatrix[j][i] = distanceMatrix[j-1][i-1];
+                }
+                else{
+                    distanceMatrix[j][i] = min(distanceMatrix[j-1][i], distanceMatrix[j][i-1], distanceMatrix[j-1][i-1]) + 1;
+                }
             }
-            System.out.println("");
         }
-        
-    
-        Stack<String> operations = analyzeDistanceMatrix(distanceMatrix, str1, str2);
-        while(!operations.empty()){
-            System.out.println(operations.pop());
-        }
-        */   
         
         
         List<Stack> analysis = analyzeDistanceMatrix(distanceMatrix, str1, str2);
@@ -79,23 +97,23 @@ public class MEDCalculator {
             
                 if(matrix[y-1][x-1] == matrix[y][x] - 1){
                     //System.out.println("substitute " + str1.charAt(x) + " with " +  str2.charAt(y));
-                    operations.push("substitute " + str1.charAt(x) + " with " +  str2.charAt(y));
+                    operations.push(String.format("%3s ==> %19s ==> %-3s" , str1.charAt(x), ("Substitute " + str1.charAt(x) + " with " +  str2.charAt(y)), str2.charAt(y)));
                 }
                 else{
                     //System.out.println("no operation");
-                    operations.push("No operation");
+                    operations.push(String.format("%3s ==>    %12s     ==> %-3s" , str1.charAt(x), "No Operation", str2.charAt(y)));
                 }
                 x = x-1;
                 y = y-1;
             }
             else if(y == 0 || (x > 0 && (y > 0 && matrix[y][x-1] <= matrix[y-1][x]) && (matrix[y][x-1] == matrix[y][x] || matrix[y][x-1] == matrix[y][x] - 1))){    
                 //System.out.println("delete " + str1.charAt(x));
-                operations.push("Delete " + str1.charAt(x));
+                operations.push(String.format("%3s ==>      %8s       ==> %-3s", str1.charAt(x),("Delete " + str1.charAt(x)), "-"));
                 x = x-1;
             }
             else{
                 //System.out.println("insert " + str2.charAt(y));
-                operations.push("Insert " + str2.charAt(y));
+                operations.push(String.format("%3s ==>      %8s       ==> %-3s", "-", ("Insert " + str2.charAt(y)), str2.charAt(y)));
                 y = y-1;
             }
 
@@ -121,6 +139,23 @@ public class MEDCalculator {
         }
 
         return matrix;
+    }
+
+
+    public TreeMap<String, Integer> sortByValues(TreeMap<String, Integer> treeMap) {
+        Comparator<String> valueComparator = new Comparator<String>() {
+            public int compare(String k1, String k2) {
+            int compare = treeMap.get(k1).compareTo(treeMap.get(k2));
+            if (compare == 0) 
+                return 1;
+            else 
+                return compare;
+            }
+        };
+ 
+        TreeMap<String, Integer> sortedByValues = new TreeMap<String, Integer>(valueComparator);
+        sortedByValues.putAll(treeMap);
+        return sortedByValues;
     }
 
     public static MEDCalculator getInstance(){
