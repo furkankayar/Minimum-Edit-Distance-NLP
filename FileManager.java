@@ -1,13 +1,10 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class FileManager {
     public static FileManager instance = new FileManager();
@@ -35,18 +32,6 @@ public class FileManager {
         
         return words;
     }
-
-    public void writeString(String str, String fileName){
-        try{
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-            writer.write(str);
-            writer.close();
-        }
-        catch(IOException ex){
-            System.out.println(ex.getMessage());
-        }
-    }
-
 
     public static FileManager getInstance(){
         return instance;
