@@ -42,6 +42,7 @@ public class UserInterface {
                     word = console.readLine().trim();
                 }
                 
+                long startTime = System.currentTimeMillis();
                 TreeMap<String, Integer> wordDistances = medCalculator.calculateMEDForDictionary(word, words);
                 int i = 0;
                 System.out.println(String.format("\n %-12s%s\n-------------------", "Distance", "Word"));
@@ -50,6 +51,8 @@ public class UserInterface {
                     if(++i == 5)
                         break;
                 }
+                System.out.println("-------------------");
+                System.out.println("Runtime: " + (System.currentTimeMillis() - startTime) + " ms");
                 System.out.println("-------------------");
             }   
             else if(choice.equals("2")){
@@ -66,9 +69,11 @@ public class UserInterface {
                     word2 = console.readLine().trim();
                 }
                 System.out.println("\nEdit Distance Matrix:\n");
+                long startTime = System.currentTimeMillis();
                 MEDModel medModel = medCalculator.calculateMED(word1, word2);
                 printMEDModel(medModel);
-                
+                System.out.println("Runtime: " + (System.currentTimeMillis() - startTime) + " ms");
+                System.out.println("-------------------");                
             }
             else if(choice.equals("3")){
                 break;
