@@ -1,15 +1,8 @@
-import java.io.Console;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Scanner;
+
 
 public class Main {
-
-    private static final FileManager fileManager = FileManager.getInstance();
-    private static final MEDCalculator medCalculator = MEDCalculator.getInstance();
+    
     private static final UserInterface userInterface = UserInterface.getInstance();
 
     public static void main(String[] args) {

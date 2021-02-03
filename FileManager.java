@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class FileManager {
     public static FileManager instance = new FileManager();
@@ -25,9 +26,15 @@ public class FileManager {
             }
             br.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.print("Press enter to continue . . .");
+            new Scanner(System.in).nextLine();
+            System.exit(0);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.print("Press enter to continue . . .");
+            new Scanner(System.in).nextLine();
+            System.exit(0);
         }
         
         return words;
